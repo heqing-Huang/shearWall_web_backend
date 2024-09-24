@@ -1,0 +1,42 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="Eslint" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myValues">
+        <value>
+          <list size="3">
+            <item index="0" class="java.lang.String" itemvalue="v-model" />
+            <item index="1" class="java.lang.String" itemvalue="v-html" />
+            <item index="2" class="java.lang.String" itemvalue="v-text" />
+          </list>
+        </value>
+      </option>
+      <option name="myCustomValuesEnabled" value="true" />
+    </inspection_tool>
+    <inspection_tool class="PyAugmentAssignmentInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <value>
+          <list size="13">
+            <item index="0" class="java.lang.String" itemvalue="ifcopenshell" />
+            <item index="1" class="java.lang.String" itemvalue="django-grappelli" />
+            <item index="2" class="java.lang.String" itemvalue="django" />
+            <item index="3" class="java.lang.String" itemvalue="docxtpl" />
+            <item index="4" class="java.lang.String" itemvalue="python-dotenv" />
+            <item index="5" class="java.lang.String" itemvalue="lark" />
+            <item index="6" class="java.lang.String" itemvalue="dc_rebar" />
+            <item index="7" class="java.lang.String" itemvalue="pydantic" />
+            <item index="8" class="java.lang.String" itemvalue="converter_dataclass" />
+            <item index="9" class="java.lang.String" itemvalue="ezdxf" />
+            <item index="10" class="java.lang.String" itemvalue="stair_structure" />
+            <item index="11" class="java.lang.String" itemvalue="stair_rebar_layout" />
+            <item index="12" class="java.lang.String" itemvalue="stair_detailed" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyPep8Inspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="PyPep8NamingInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+  </profile>
+</component>
