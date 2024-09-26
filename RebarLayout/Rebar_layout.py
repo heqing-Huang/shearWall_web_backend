@@ -13,8 +13,9 @@ import copy
 
 from DoubleWallDesign.models import DetailedDesign, DetailedDesignResult
 from dc_rebar import *
-from APF_compute import compute_aer, compute_Attract, compute_r
-from RebarLayout.collision_detection import ShearWallObstacle, ShearWallFCLModel
+from .APF_compute import compute_aer, compute_Attract, compute_r
+from RebarLayout.collision_detection import ShearWallFCLModel
+# from RebarLayout.collision_detection import ShearWallObstacle, ShearWallFCLModel
 from RebarLayout.fcl_models import Agent
 from DoubleWallDesign.models import RebarforBIM, RebarforBVBS
 

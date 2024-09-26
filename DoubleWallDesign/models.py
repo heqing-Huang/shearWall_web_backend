@@ -398,14 +398,17 @@ class InsertsDetailed:
     预埋件设计的参数输入
     """
     lifting_inserts_design_mode: LiftingInsertsDesignMode = LiftingInsertsDesignMode.MANUAL  # automatic为掉装自动计算，manual为手动输入，默认为自动计算
-    support_inserts_design_mode: SupportInsertsDesignMode = SupportInsertsDesignMode.MANUAL  # automatic自动计算，manual手动输入
-    cast_inserts_design_mode: CastInsertsDesignMode = CastInsertsDesignMode.MANUAL  # automatic自动计算，manual手动输入
-    cast_inserts_number: Optional[CastInsertsNumber] = None
-    other_inserts: OtherInserts = OtherInserts.NO  # 是否有其他的预埋件
     lifting_inserts_diameter: Optional[int] = 16  # 吊装预埋件的直径
     lifting_inserts_position: Optional[LiftingInsertsPosition] = None  # 吊装预埋件的直径
+
+    support_inserts_design_mode: SupportInsertsDesignMode = SupportInsertsDesignMode.MANUAL  # automatic自动计算，manual手动输入
     support_inserts_parameter: Optional[int] = 30  # 安装预埋件孔洞大小
     support_inserts_position: Optional[SupportInsertsPosition] = None
+
+    cast_inserts_design_mode: CastInsertsDesignMode = CastInsertsDesignMode.MANUAL  # automatic自动计算，manual手动输入
+    cast_inserts_number: Optional[CastInsertsNumber] = None
+
+    other_inserts: OtherInserts = OtherInserts.NO  # 是否有其他的预埋件
     other_inserts_number: Optional[int] = None
     other_inserts_parameters: Optional[List[int]] = None  # 普通预埋件的直径尺寸列表[10,15,20]
     other_inserts_positions: Optional[List[List[int]]] = None  # 距离墙左边，下边距离
@@ -571,8 +574,8 @@ class TrussDetailed:
     """
     # 0 代表自动计算,1 代表手动输入
     truss_rebar_mode: TrussRebarMode = TrussRebarMode.AUTOMATIC  # 设计模式
-    distributed_bar: DistributedBar = DistributedBar.NO  # 桁架筋不作为分布筋
-    lifting_bar: DistributedBar = DistributedBar.NO  # 桁架筋不作为吊装筋
+    distributed_rebar: DistributedBar = DistributedBar.NO  # 桁架筋不作为分布筋
+    lifting_rebar: DistributedBar = DistributedBar.NO  # 桁架筋不作为吊装筋
     # 手动输入需要的参数
     material_name: str = 'HPB300'
     top_rebar: RebarDiam = None  # 上部钢筋直径

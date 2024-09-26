@@ -68,6 +68,12 @@ class WallDetailedData(models.Model):
         default=get_default_remark_name,
         max_length=64,
     )
+
+    pub_date = models.DateTimeField(
+        verbose_name="发布时间",
+        null=True,
+    )  # DateTimeField日期时间字段
+
     # 材料相关
     rebar_name = models.CharField(
         choices=REBAR_CONFIG_NAME,
@@ -157,10 +163,10 @@ class WallDetailedData(models.Model):
 
     horizontal_rebar_diameter = models.IntegerField(verbose_name="水平钢筋直径 (mm)", null=True, blank=True)
     horizontal_rebar_spacing = models.IntegerField(verbose_name="水平钢筋间距 (mm)", null=True, blank=True)
-    horizontal_rebar_ratio = models.FloatField(verbose_name="水平钢筋配筋率", null=True, blank=True)
+    horizontal_rebars_ratio = models.FloatField(verbose_name="水平钢筋配筋率", null=True, blank=True)
     vertical_rebar_diameter = models.IntegerField(verbose_name="竖向钢筋直径 (mm)", null=True, blank=True)
     vertical_rebar_spacing = models.IntegerField(verbose_name="竖向钢筋间距 (mm)", null=True, blank=True)
-    vertical_rebar_ratio = models.FloatField(verbose_name="竖向钢筋配筋率", null=True, blank=True)
+    vertical_rebars_ratio = models.FloatField(verbose_name="竖向钢筋配筋率", null=True, blank=True)
 
     def validate_rebar_design_mode(self):
         rebar_dm = RebarDesignMode(self.rebar_design_mode)
@@ -169,11 +175,11 @@ class WallDetailedData(models.Model):
             if (
                 self.horizontal_rebar_diameter is None
                 or self.horizontal_rebar_spacing is None
-                or self.horizontal_rebar_ratio is None
+                or self.horizontal_rebars_ratio is None
             ) and (
                 self.vertical_rebar_diameter is None
                 or self.vertical_rebar_spacing is None
-                or self.vertical_rebar_ratio is None
+                or self.vertical_rebars_ratio is None
             ):
                 raise ValidationError(errors)
 
@@ -332,13 +338,13 @@ class WallDetailedData(models.Model):
         verbose_name="其他预埋件的直径尺寸列表",
         null=True,
         blank=True,
-        help_text="以[ ]列表的形式呈现",
+        help_text="以逗号隔开",
     )
     other_inserts_positions = models.TextField(
         verbose_name="其他预埋件距离墙左方、下方的距离",
         null=True,
         blank=True,
-        help_text="以[ [ ] ]的形式呈现",
+        help_text="以[ ]的形式呈现",
     )
 
     class Meta:
@@ -391,4 +397,16 @@ class WallDetailedResult(models.Model):
 
     class Meta:
         verbose_name = "深化设计结果"
+        verbose_name_plural = verbose_name
+
+
+class DetailDataCopyChangeWrite(models.Model):
+    """
+    此表用于存放深化设计期间被修改的参数,但并不做显示
+    """
+
+    content = models.JSONField(verbose_name="design parameter")
+
+    class Meta:
+        verbose_name = "深化设计-参数修改"
         verbose_name_plural = verbose_name

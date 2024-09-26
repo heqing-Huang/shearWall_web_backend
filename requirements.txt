@@ -39,11 +39,17 @@ xz=5.2.5=h8cc25b3_1
 zlib=1.2.12=h8cc25b3_2
 zstd=1.5.2=h19a0ad4_0
 
-numpy
+numpy~=2.0.0
 pydantic==1.10.2
-ezdxf==0.18.1
+ezdxf~=1.1.4
 dc_rebar
 converter_dataclass
 stair_structure
 stair_detailed
 stair_rebar_layout
+
+django~=4.2.16
+djangorestframework~=3.15.2
+ifcopenshell~=v0.7.0.231127
+python-dotenv~=1.0.1
+docxtpl~=0.18.0

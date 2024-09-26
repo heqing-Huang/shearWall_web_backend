@@ -1,5 +1,6 @@
 from django.contrib import admin
 from design.models import WallDetailedData, WallDetailedResult
+from design.tools import call_detailed_design
 
 # 登录界面标题
 admin.site.site_header = '复杂预制构件智能深化设计系统'
@@ -11,7 +12,7 @@ admin.site.index_title = '站点管理'
 # Register your models here.
 @admin.register(WallDetailedData)
 class AdminWallDetailedData(admin.ModelAdmin):
-    list_display = ["project_num", "shear_wall_num", "remark_name"]
+    list_display = ["project_num", "shear_wall_num", "remark_name", "pub_date"]
     fieldsets = [
         ("剪力墙项目", {
             "fields": [
@@ -84,10 +85,10 @@ class AdminWallDetailedData(admin.ModelAdmin):
             "fields": [
                 "horizontal_rebar_diameter",
                 "horizontal_rebar_spacing",
-                "horizontal_rebar_ratio",
+                "horizontal_rebars_ratio",
                 "vertical_rebar_diameter",
                 "vertical_rebar_spacing",
-                "vertical_rebar_ratio",
+                "vertical_rebars_ratio",
             ],
         }),
 
@@ -187,6 +188,7 @@ class AdminWallDetailedData(admin.ModelAdmin):
         instance: WallDetailedResult
         if obj:
             # 在这里调用结构计算
+            call_detailed_design(obj)
             pass
         return data_back
 

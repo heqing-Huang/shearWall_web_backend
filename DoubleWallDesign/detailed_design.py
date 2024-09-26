@@ -1,9 +1,7 @@
-"""
-Date&Time           2022/8/3 11:26
-Author              HaoLan
-
-"""
 import logging
+from io import BytesIO
+from typing import IO, Tuple, Any
+from docxtpl import DocxTemplate
 
 from DigitalDesign.get_data import ShearWallData
 from RebarLayout.layout_opt import layout_opt
@@ -11,6 +9,10 @@ from DoubleWallDesign.models import RebarDesignMode, ShearWallType, DetailedDesi
     ConcreteParameter, RebarforBIM, RebarforBVBS, RebarParameter, WallLengthType, TrussRebarMode, WallHole
 from RebarLayout.tools import get_volume, get_area, rebar_opt, truss_design
 from RebarLayout.collision_detection import ShearWallFCLModel
+
+from DoubleWallDesign.tools import (
+    DetailedCalculationBook
+)
 
 _logger = logging.getLogger(__name__)
 
@@ -137,3 +139,51 @@ def detailed_design(parameter: DetailedDesign):
     truss_rebar_for_BIM = shear_wall_data.get_truss_rebars(truss_layout)
 
     return result, rebar_for_BIM, rebar_for_BVBS, truss_rebar_for_BIM, shear_wall_data,
+
+def to_word_detailed(
+    data: DetailedCalculationBook, file: IO[bytes]
+) -> Tuple[IO[bytes], Any]:
+    """
+    基于word模板渲染生成word文件
+    :param data:
+    :param file:
+    :return:
+    """
+    doc = DocxTemplate(file)
+
+    detailed = data.detailed_design_result.detailed_design
+    detailed_result = data.detailed_design_result
+
+    concrete_parameter = ConcreteParameter.by_grade(
+        detailed.material.concrete_grade
+    )
+    rebar_parameter = RebarParameter.by_name(detailed.material.rebar_name)
+
+    context = {
+        "detailed_cal_book": {
+            "project_ID": detailed.shear_wall_id.project_ID,
+            "shear_wall_ID": detailed.shear_wall_id.shear_wall_ID,
+
+            "concrete_name": concrete_parameter.name,
+            "concrete_f_tk": concrete_parameter.f_tk,
+            "rebar_name": rebar_parameter.name,
+
+            "interior_height": detailed_result.interior_height,
+            "exterior_height": detailed_result.exterior_height,
+            "left_gap_length": detailed_result.left_gap_length,
+            "right_gap_length": detailed_result.right_gap_length,
+            "interior_length": detailed_result.interior_length,
+            "exterior_length": detailed_result.exterior_length,
+            "volume": detailed_result.volume,
+            "area": detailed_result.area,
+            "weight": detailed_result.weight,
+            "horizontal_rebars": detailed_result.horizontal_rebars,
+            "vertical_rebars": detailed_result.vertical_rebars,
+        }
+    }
+    doc.render(context)  # 转换成字典使用
+    bytes_back = BytesIO()
+    doc.save(bytes_back)
+    bytes_back.seek(0)
+    set_of_variables = doc.get_undeclared_template_variables()
+    return bytes_back, set_of_variables
