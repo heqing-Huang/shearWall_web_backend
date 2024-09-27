@@ -1,6 +1,6 @@
 from django.contrib import admin
 from design.models import WallDetailedData, WallDetailedResult
-from design.tools import call_detailed_design
+from design.tools import call_detailed_design, call_detailed_design_by_model
 
 # 登录界面标题
 admin.site.site_header = '复杂预制构件智能深化设计系统'
@@ -182,14 +182,13 @@ class AdminWallDetailedData(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         # 执行保存
-        data_back = super(AdminWallDetailedData, self).save_model(
-            request, obj, form, change
-        )
+        data_back = super(AdminWallDetailedData, self).save_model(request, obj, form, change)
         instance: WallDetailedResult
+        obj: WallDetailedData
         if obj:
             # 在这里调用结构计算
-            call_detailed_design(obj)
-            pass
+            detailed_result_row = call_detailed_design_by_model(obj)
+            # tasks.total_back_handle.apply_async((detailed_result_row.id,))
         return data_back
 
 @admin.register(WallDetailedResult)

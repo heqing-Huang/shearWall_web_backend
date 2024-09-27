@@ -421,6 +421,79 @@ class DetailedDataSerializer(serializers.ModelSerializer):
         ]
 
 
+def _dataclass_2_dict_with_head(
+    data: dataclass,
+    head: Optional[str] = None,
+    dict_factory: Callable = custom_asdict_contain_enum,
+) -> Dict:
+    """
+    将dataclass 以一个固定的开头，转换成字典类型
+    Args:
+        data:
+        head:
+        dict_factory:
+
+    Returns:
+
+    """
+    data_back = {}
+    try:
+        for key, value in asdict(data, dict_factory=dict_factory).items():
+            new_key = key if head is None else f"{head}_{key}"
+            data_back[new_key] = value
+    except TypeError as e:
+        if data is not None:
+            _logger.warning(f"{data},{head},{dict_factory},{e}")
+            traceback.print_exc()
+
+    return data_back
+
+
+def detail_result_2_model_result(
+    result: DetailedDesignResult, detailed_data: WallDetailedData
+) -> WallDetailedResult:
+    """
+    完成dataclass 嵌套格式的数据,到数据库表orm 的转换[手动] 默认不保存
+    """
+    # if WallHoleType(result.wall_hole_type) == WallHoleType.RECTANGLE:
+    #     wall_hole_parameter = _dataclass_2_dict_with_head(
+    #         result.wall_hole_parameter, "wall_hole_parameter_rectangle_parameter"
+    #     )
+    #
+    # elif WallHoleType(result.wall_hole_type) == WallHoleType.CIRCLE:
+    #     wall_hole_parameter = _dataclass_2_dict_with_head(
+    #         result.wall_hole_parameter, "wall_hole_parameter_circle_parameter"
+    #     )
+    # else:
+    #     raise Exception(f"类型检验失败:{result.wall_hole_type=}")
+
+    content = asdict(
+        result.detailed_design, dict_factory=exchange.tools.custom_asdict_contain_enum
+    )
+
+    ccw_serializer = SerializerBtnDesignResultCopyWrite(data={"content": content})
+    if ccw_serializer.is_valid():
+        ccw_instance: DetailDataCopyChangeWrite = ccw_serializer.save()
+    else:
+        raise ccw_serializer.errors
+
+    result_orm = WallDetailedResult.objects.update_or_create(
+        defaults=dict(
+            interior_height=result.interior_height,
+            exterior_height=result.exterior_height,
+            left_gap_length=result.left_gap_length,
+            right_gap_length=result.right_gap_length,
+            interior_length=result.interior_length,
+            exterior_length=result.exterior_length,
+            volume=result.volume,
+            area=result.area,
+            weight=result.weight,
+            horizontal_rebars=result.horizontal_rebars,
+            vertical_rebars=result.vertical_rebars,
+        ),
+    )[0]
+
+    return result_orm
 
 class SerializerBtnDesignResultCopyWrite(serializers.ModelSerializer):
     """

@@ -12,6 +12,11 @@ from dc_rebar import Rebar
 from DoubleWallDesign.config import CONCRETE_CONFIG_DICT, REBAR_GRADE_CONFIG, REBAR_NAME_CONFIG
 
 
+from converter_dataclass import (
+    dataclass_with_converter as dataclass,
+    field_with_converter as field,
+)
+
 class LiftingInsertsDesignMode(Enum):
     """
     吊装预埋件设计模式枚举
@@ -516,7 +521,7 @@ class InsertsDetailed:
             assert self.support_inserts_position is not None, Exception(f"support_position 不能为空")
             if isinstance(self.support_inserts_position, dict):
                 self.support_inserts_position = SupportInsertsPosition(**self.support_inserts_position)
-            if not isinstance(self.support_inserts_position, SupportInsertsDesignMode):
+            if not isinstance(self.support_inserts_position, SupportInsertsPosition):
                 raise Exception(f"support_position 数据异常:{self.support_inserts_position}")
 
         elif self.support_inserts_design_mode == SupportInsertsDesignMode.AUTOMATIC:
@@ -641,15 +646,19 @@ class DetailedDesign:
     """
     整个深化计算需要传递的参数
     """
-    shear_wall_id: ShearWallID
-    material: Material
-    construction_detailed: ConstructionDetailed
-    geometric_detailed: GeometricDetailed
-    rebar_detailed: RebarDetailed
-    truss_detailed: TrussDetailed
-    inserts_detailed: InsertsDetailed
+    shear_wall_id: ShearWallID = field(converter=ShearWallID.converter)
+    material: Material = field(converter=Material.converter)
+    construction_detailed: ConstructionDetailed = field(converter=ConstructionDetailed.converter)
+    geometric_detailed: GeometricDetailed = field(converter=GeometricDetailed.converter)
+    rebar_detailed: RebarDetailed = field(converter=RebarDetailed.converter)
+    truss_detailed: TrussDetailed = field(converter=TrussDetailed.converter)
+    inserts_detailed: InsertsDetailed = field(converter=InsertsDetailed.converter)
 
     def __post_init__(self):
+        if isinstance(self.shear_wall_id, dict):
+            self.stair_id = ShearWallID(**self.shear_wall_id)
+        if isinstance(self.material, dict):
+            self.material = Material(**self.material)
         if isinstance(self.construction_detailed, dict):
             self.construction_detailed = ConstructionDetailed(**self.construction_detailed)
         if isinstance(self.geometric_detailed, dict):
@@ -667,7 +676,7 @@ class DetailedDesignResult:
     """
     定义深化设计返回的计算结果
     """
-    detailed_design: DetailedDesign
+    detailed_design: DetailedDesign = field(converter=DetailedDesign.converter)
     interior_height: int
     exterior_height: int
     left_gap_length: int
